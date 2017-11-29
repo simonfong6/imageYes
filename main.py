@@ -9,7 +9,7 @@ NUM_CLASSES = 256
 
 image = cv2.imread('256_ObjectCategories/001.ak47/001_0001.jpg')
 
-small = cv2.resize(image, (299,299))
+small = cv2.resize(image, (IMAGE_HEIGHT,IMAGE_WIDTH))
 
 
 
