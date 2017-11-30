@@ -1,18 +1,19 @@
 from inception_v3 import inception_v3
+from data import Data
 import tensorflow as tf
 import cv2
 import numpy as np
 
 IMAGE_WIDTH = 299
 IMAGE_HEIGHT = 299
-NUM_CLASSES = 256
+NUM_CLASSES = 257
 
-image = cv2.imread('256_ObjectCategories/001.ak47/001_0001.jpg')
+caltech_256 = Data('256_ObjectCategories',IMAGE_HEIGHT,IMAGE_WIDTH)
 
-small = cv2.resize(image, (IMAGE_HEIGHT,IMAGE_WIDTH))
+caltech_256.load_data()
 
-
-
+images = caltech_256.images
+labels = caltech_256.labels
 
 
 inputs = tf.placeholder("float", [None,IMAGE_HEIGHT,IMAGE_WIDTH,3])
@@ -26,5 +27,5 @@ init = tf.global_variables_initializer()
 
 with tf.Session() as sess:
     sess.run(init)
-    poop = base.eval(feed_dict={inputs: [small], y_: [y]})
-    print poop
+    poop = base.eval(feed_dict={inputs: images, y_: labels})
+    print(poop)
