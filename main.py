@@ -34,7 +34,10 @@ accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
 init = tf.global_variables_initializer()
 
-with tf.Session() as sess:
+# Create saver object
+saver = tf.train.Saver()
+
+with tf.Session() as sess:ls
     sess.run(init)
     
     for i in range(EPOCHS):
@@ -48,4 +51,8 @@ with tf.Session() as sess:
         
         _, loss = sess.run([train_step, cross_entropy], 
                             feed_dict={inputs: images, predict: labels})
+                            
+    # Save the variables to disk.
+    save_path = saver.save(sess, "./model.ckpt")
+    print("Model saved in file: %s" % save_path)  
         
