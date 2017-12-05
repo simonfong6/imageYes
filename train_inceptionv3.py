@@ -4,11 +4,11 @@ Author: Simon Fong, Thinh Le, Wilson Tran
 
 """
 
-from tensorflow.keras.python.keras.models import Model
-from tensorflow.keras.python.keras.applications.vgg16 import VGG16, InceptionV3
-from tensorflow.keras.python.keras import optimizers
-from tensorflow.keras.python.keras.layers import Dropout, Flatten, Dense
-from tensorflow.keras.python.keras.utils.np_utils import to_categorical
+from keras.models import Model
+from keras.applications.inception_v3 import InceptionV3
+from keras import optimizers
+from keras.layers import Dropout, Flatten, Dense
+from keras.utils.np_utils import to_categorical
 import numpy as np
 import glob
 import os
@@ -68,11 +68,17 @@ def main():
 
     # read train and validation data and train the model for n epochs
     print 'Load train data:'
-    X_train, Y_train = load_data(TRAIN_DIR)
+    X_train, Y_train = cal.next_batch(50)
+    X_train = np.array(X_train)
+    Y_train = np.array(Y_train)
+    X_train.reshape(50,299,299,3)
+    Y_train.reshape(50,299,299,3)
     print 'Load val data:'
-    X_val, Y_val = load_data(VAL_DIR)
+    X_val, Y_val = cal.next_batch(50)
+    X_val.reshape(50,299,299,3)
+    Y_val.reshape(50,299,299,3)
     # TODO: Train model
-    model.fit(x=X_train,y=Y_train,batch_size=BATCH_SIZE,epochs=NUM_EPOCHS,validation_data=(X_val,Y_val))
+    model.fit(x=X_train,y=Y_train,batch_size=BATCH_SIZE,epochs=EPOCHS,validation_data=(X_val,Y_val))
 
     # TODO: Save model weights
     model.save('side_hoe_number_2.h5')
