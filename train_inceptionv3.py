@@ -60,9 +60,11 @@ def main():
     model = load_model()
     print 'Inception created\n'
 
-    # int(image_count / BATCH_SIZE
+    num_steps = int(cal.image_count / BATCH_SIZE/4)
+    
+    print "NUM STEPS = {}".format(num_steps)
 
-    for i in range( 5 ):
+    for i in range(num_steps):
         print('STEP {}------------------------------------------'.format(i))
         # read train and validation data and train the model for n epochs
         print 'Load train data: step {}'.format(i)
