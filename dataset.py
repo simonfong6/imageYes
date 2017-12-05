@@ -85,8 +85,8 @@ class Dataset:
         batch_labels = np.array(batch_labels)
         
         # Reshape to proper expected output
-        X_train.reshape(batch_size,self.height,self.width,3)
-        Y_train.reshape(batch_size,num_classes)
+        batch_images.reshape(batch_size,self.height,self.width,3)
+        batch_labels.reshape(batch_size,self.num_classes)
         
         return batch_images, batch_labels
     
