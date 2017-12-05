@@ -20,7 +20,7 @@ from dataset import Dataset
 IMAGE_WIDTH = 299
 IMAGE_HEIGHT = 299
 NUM_CHANNELS = 3
-EPOCHS = 100
+EPOCHS = 10
 BATCH_SIZE = 50
 
 # Load dataset
@@ -60,15 +60,19 @@ def main():
     model = load_model()
     print 'Inception created\n'
 
-    # read train and validation data and train the model for n epochs
-    print 'Load train data:'
-    X_train, Y_train = cal.next_batch(cal.image_count - 50)
+    # int(image_count / BATCH_SIZE
 
-    print 'Load val data:'
-    X_val, Y_val = cal.next_batch(50)
+    for i in range( 5 ):
+        print('STEP {}------------------------------------------'.format(i))
+        # read train and validation data and train the model for n epochs
+        print 'Load train data: step {}'.format(i)
+        X_train, Y_train = cal.next_batch(BATCH_SIZE)
 
-    # TODO: Train model
-    model.fit(x=X_train,y=Y_train,batch_size=BATCH_SIZE,epochs=EPOCHS,validation_data=(X_val,Y_val))
+        print 'Load val data: step {}'.format(i)
+        X_val, Y_val = cal.next_batch(BATCH_SIZE)
+
+        # TODO: Train model
+        model.fit(x=X_train,y=Y_train,batch_size=BATCH_SIZE,epochs=EPOCHS,validation_data=(X_val,Y_val))
 
     # TODO: Save model weights
     model.save('side_hoe_number_2.h5')
