@@ -68,7 +68,7 @@ def main():
 
     # read train and validation data and train the model for n epochs
     print 'Load train data:'
-    X_train, Y_train = cal.next_batch(50)
+    X_train, Y_train = cal.next_batch(cal.image_count)
     X_train = np.array(X_train)
     Y_train = np.array(Y_train)
     X_train.reshape(50,299,299,3)
