@@ -62,7 +62,7 @@ def main():
 
     # read train and validation data and train the model for n epochs
     print 'Load train data:'
-    X_train, Y_train = cal.next_batch(50)
+    X_train, Y_train = cal.next_batch(cal.image_count - 50)
 
     print 'Load val data:'
     X_val, Y_val = cal.next_batch(50)
