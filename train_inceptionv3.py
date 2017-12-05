@@ -46,7 +46,7 @@ def load_model():
     x = Dense(256,activation='relu')(x)
     x = Dropout(0.5)(x)    
 
-    predictions = Dense(19,activation='softmax')(x)
+    predictions = Dense(num_classes,activation='softmax')(x)
 
     model = Model(inputs=base_model.input, outputs=predictions)
     print 'Build model'
@@ -64,7 +64,7 @@ def load_model():
 def main():
     # make model
     model = load_model()
-    print 'VGG16 created\n'
+    print 'Inception created\n'
 
     # read train and validation data and train the model for n epochs
     print 'Load train data:'
@@ -72,11 +72,13 @@ def main():
     X_train = np.array(X_train)
     Y_train = np.array(Y_train)
     X_train.reshape(50,299,299,3)
-    Y_train.reshape(50,299,299,3)
+    Y_train.reshape(50,num_classes)
     print 'Load val data:'
     X_val, Y_val = cal.next_batch(50)
+    X_val = np.array(X_val)
+    Y_val = np.array(Y_val)
     X_val.reshape(50,299,299,3)
-    Y_val.reshape(50,299,299,3)
+    Y_val.reshape(50,num_classes)
     # TODO: Train model
     model.fit(x=X_train,y=Y_train,batch_size=BATCH_SIZE,epochs=EPOCHS,validation_data=(X_val,Y_val))
 
