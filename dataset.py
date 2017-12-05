@@ -80,6 +80,14 @@ class Dataset:
         batch_labels = [ self.labels[i] for i in perm ]
         batch_labels = batch_labels[:batch_size]
         
+        # Convert to numpy array
+        batch_images = np.array(batch_images)
+        batch_labels = np.array(batch_labels)
+        
+        # Reshape to proper expected output
+        X_train.reshape(batch_size,self.height,self.width,3)
+        Y_train.reshape(batch_size,num_classes)
+        
         return batch_images, batch_labels
     
                 
