@@ -1,7 +1,7 @@
 import os
-import cv2
+import cv2          # Needed image loading
 import numpy as np
-import json
+import sys          # Needed for progress tracking
 
 class Dataset:
     def __init__(self,data_dir,height,width):
@@ -72,14 +72,21 @@ class Dataset:
     def load_data(self, image_paths):
         """Loads images as numpy arrays and returns them."""
         
+        # Calculate total for progress tracker
+        total = len(image_paths)
+        
         # Stores image arrays
         images = []
         
         # Read images and store in images list
-        for image_path in image_paths:
+        for i,image_path in enumerate(image_paths):
             image = cv2.imread(image_path)
             image_resized = cv2.resize(image, (self.height,self.width))
             images.append(image_resized)
+            
+            # Update progress tracker
+            sys.stdout.write("Loading progress:    %d/%d   \r" % (i+1,total) )
+            sys.stdout.flush()
         
         return images
         
@@ -183,6 +190,7 @@ class Dataset:
         """Returns training data and labels"""
         
         # Load and reshape images
+        print("Loading training data...")
         images_train = self.load_data(self.image_paths_train)
         self.images_train = self.reshape_images(images_train)
         
@@ -198,6 +206,7 @@ class Dataset:
         """Returns validation data and labels"""
         
         # Load and reshape images
+        print("Loading validation data...")
         images_val = self.load_data(self.image_paths_val)
         self.images_val = self.reshape_images(images_val)
         
@@ -212,6 +221,7 @@ class Dataset:
         """Returns testing data and labels"""
         
         # Load and reshape images
+        print("Loading testing data...")
         images_test = self.load_data(self.image_paths_test)
         self.images_test = self.reshape_images(images_test)
         
