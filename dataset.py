@@ -83,16 +83,37 @@ class Dataset:
         
         return images
         
-    def create_perm(self,length):
+    def create_perm(self,length,seed=0):
         """Returns a permutation for the given length"""
+        
+        np.random.seed(seed)
         perm = np.arange(length)
-        return np.random.shuffle(perm)
+        np.random.shuffle(perm)
+
+        return perm
         
     def shuffle(self,a_list,perm):
         """Returns a shuffled version of that list according to the perm"""
         
         return [ a_list[i] for i in perm ]
         
+    def reshape_images(self, images):
+        """Reshapes images to numpy arrays"""
+        
+        length = len(images)
+        images = np.array(images)
+        images.reshape(length,self.height,self.width,self.channels)
+        
+        return images
+    
+    def reshape_labels(self, labels):
+        """Reshapes labels to numpy arrays"""
+        
+        length = len(labels)
+        labels = np.array(labels)
+        labels.reshape(length,self.num_classes)
+        
+        return labels
         
         
     def next_batch(self,batch_size):
@@ -101,23 +122,18 @@ class Dataset:
         # Create a random seed
         perm = self.create_perm(self.image_count)
         
-        
         # Shuffle paths and get a batch of image arrays
-        image_paths = self.shuffle(self.image_paths[],perm)
+        image_paths = self.shuffle(self.image_paths,perm)
         image_paths = image_paths[:batch_size]
         batch_images = self.load_data(image_paths)
         
         # Shuffle labels and get a batch
-        batch_labels = self.shuffle(self.labels[],perm)
+        batch_labels = self.shuffle(self.labels,perm)
         batch_labels = batch_labels[:batch_size]
         
-        # Convert to numpy array
-        batch_images = np.array(batch_images)
-        batch_labels = np.array(batch_labels)
-        
-        # Reshape to proper expected output
-        batch_images.reshape(batch_size,self.height,self.width,self.channels)
-        batch_labels.reshape(batch_size,self.num_classes)
+        # Convert to numpy arrays
+        batch_images = self.reshape_images(batch_images)
+        batch_labels = self.reshape_labels(batch_labels)
         
         return batch_images, batch_labels
         
@@ -134,8 +150,77 @@ class Dataset:
         self.num_val = int( (val_percent/100.0) * self.image_count)
         self.num_test = self.image_count - self.num_train - self.num_val
         
+        # Create a random seed
+        perm = self.create_perm(self.image_count)
+        
+        # Shuffle
+        image_paths = self.shuffle(self.image_paths,perm)
+        
+        # Shuffle labels
+        labels = self.shuffle(self.labels,perm)
+        
+        # Assign training set
+        start = 0
+        end = self.num_train
+        self.image_paths_train = image_paths[start:end]
+        self.labels_train = labels[start:end]
+        
+        # Assign validaiton set
+        start = end
+        end = start + self.num_val
+        self.image_paths_val = image_paths[start:end]
+        self.labels_val = labels[start:end]
+        
+        # Assign test set
+        start = end
+        end = start + self.num_test
+        self.image_paths_test = image_paths[start:end]
+        self.labels_test = labels[start:end]
+        
+        print("Splits training, validation, and testing data.")
+        
+    def load_training(self):
+        """Returns training data and labels"""
+        
+        # Load and reshape images
+        images_train = self.load_data(self.image_paths_train)
+        self.images_train = self.reshape_images(images_train)
+        
+        # Reshape labels
+        self.labels_train = self.reshape_labels(self.labels_train)
+        
+        print("Loaded training data")
         
         
+        return self.images_train, self.labels_train
+        
+    def load_validation(self):
+        """Returns validation data and labels"""
+        
+        # Load and reshape images
+        images_val = self.load_data(self.image_paths_val)
+        self.images_val = self.reshape_images(images_val)
+        
+        # Reshape labels
+        self.labels_val = self.reshape_labels(self.labels_val)
+        
+        print("Loaded validation data")
+        
+        return self.images_val, self.labels_val
+    
+    def load_test(self):
+        """Returns testing data and labels"""
+        
+        # Load and reshape images
+        images_test = self.load_data(self.image_paths_test)
+        self.images_test = self.reshape_images(images_test)
+        
+        # Reshape labels
+        self.labels_test = self.reshape_labels(self.labels_test)
+        
+        print("Loaded validation data")
+        
+        return self.images_test, self.labels_test
         
         
         
@@ -143,21 +228,23 @@ class Dataset:
         
 def main():
     
-    data = Dataset('train', 299, 299)
+    data = Dataset('caltech', 299, 299)
     data.read_data()
-    
-    #print json.dumps(data.names, indent=4, sort_keys=True)
+    data.train_val_test_split(1,39,60)
     
     names = data.names
     
-    images, labels = data.next_batch(50)
+    images, labels = data.load_training()
 
-    for image,label in zip(images,labels):
+    # Display image and its label
+    for i,image,label in zip(range(10),images,labels):
         name = names[np.argmax(label)]
-        print("{} \t {}".format(name,label))
+        print("{} \t {}".format(name,np.argmax(label)))
         cv2.imshow(name,image)
         cv2.waitKey()
         cv2.destroyAllWindows()
+        if i == 10:
+            break
     
 if __name__ == '__main__':
     main()
