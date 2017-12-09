@@ -185,7 +185,7 @@ class Dataset:
         self.image_paths_test = image_paths[start:end]
         self.labels_test = labels[start:end]
         
-        print("Split {} data into {} training, {} validation, and {} testing data.".format(self.num_count, self.num_train, self.num_val, self.num_test))
+        print("Split {} data into {} training, {} validation, and {} testing data.".format(self.image_count, self.num_train, self.num_val, self.num_test))
         
     def load_training(self):
         """Returns training data and labels"""
@@ -241,7 +241,7 @@ def main():
     
     data = Dataset('caltech', 299, 299)
     data.read_data()
-    data.train_val_test_split(1,39,60)
+    data.train_val_test_split(1,39,1)
     
     names = data.names
     
