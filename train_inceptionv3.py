@@ -113,7 +113,6 @@ def main():
 
     """
     # Create plots
-    plt.figure()
     plt.hold(True)
     plt.plot(train_acc)
     plt.plot(train_val_acc)
@@ -125,7 +124,6 @@ def main():
     plt.hold(False)
     plt.show()
 
-    plt.figure()
     plt.hold(True)
     plt.plot(train_loss)
     plt.plot(train_val_loss)
