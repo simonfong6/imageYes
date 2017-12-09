@@ -5,15 +5,15 @@ import json
 
 class Dataset:
     def __init__(self,data_dir,height,width):
-        self.data_dir = data_dir
-        self.height = height
-        self.width = width
-        self.num_classes = 0
-        self.image_count = 0
-        self.image_paths = []
-        self.images = []
-        self.names = {}
-        self.labels = []
+        self.data_dir = data_dir# Path to the directory of data
+        self.height = height    # Height that an image is resized to
+        self.width = width      # Width that an image is resized to
+        self.num_classes = 0    # Tracks number of classes
+        self.image_count = 0    # Tracks total number of images
+        self.image_paths = []   # List of paths to images
+        self.images = []        # List of images
+        self.names = {}         # Dictonary that maps vector labels to text 
+        self.labels = []        # List of vector labels
         
     def read_data(self):
         """Creates a list of image paths and labels"""
