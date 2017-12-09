@@ -111,7 +111,7 @@ def main():
     model.save('fully_trained_1_1_98.h5')
     print 'model weights saved.'
 
-    """
+    
     # Create plots
     plt.hold(True)
     plt.plot(train_acc)
@@ -134,7 +134,7 @@ def main():
     plt.savefig('./loss_vs_val_loss.png')
     plt.hold(False)
     plt.show()
-    """
+    
     X_test, Y_test = cal.load_test()
     metrics = model.evaluate(x=X_test,y=Y_test, batch_size=BATCH_SIZE)
     
