@@ -1,3 +1,4 @@
+
 """
 COGS 118B Project
 Author: Simon Fong, Thinh Le, Wilson Tran
@@ -14,6 +15,7 @@ import glob
 import os
 import cv2
 import random
+import matplotlib.pyplot as plt
 from dataset import Dataset
 
 
@@ -21,7 +23,7 @@ IMAGE_WIDTH = 299
 IMAGE_HEIGHT = 299
 NUM_CHANNELS = 3
 EPOCHS = 10
-BATCH_SIZE = 50
+BATCH_SIZE = 5
 
 # Load dataset
 cal = Dataset('caltech',IMAGE_HEIGHT,IMAGE_WIDTH)
@@ -29,7 +31,6 @@ cal.read_data()
 num_classes = cal.num_classes
 
 MEAN_PIXEL = np.array([104., 117., 123.]).reshape((1,1,3))
-
 
 
 def load_model():
@@ -40,7 +41,7 @@ def load_model():
 
     x = Flatten()(base_out)
     x = Dense(256,activation='relu')(x)
-    x = Dropout(0.5)(x)    
+    x = Dropout(0.5)(x)
 
     predictions = Dense(num_classes,activation='softmax')(x)
 
@@ -55,13 +56,20 @@ def load_model():
 
 
 
+
 def main():
     # make model
     model = load_model()
     print 'Inception created\n'
 
-    num_steps = int(cal.image_count / BATCH_SIZE/4)
-    
+    num_steps = int(cal.image_count / BATCH_SIZE/16)
+
+    # Store data to plot
+    train_acc = np.array([])
+    train_val_acc = np.array([])
+    train_loss = np.array([])
+    train_val_loss = np.array([])
+
     print "NUM STEPS = {}".format(num_steps)
 
     for i in range(num_steps):
@@ -74,11 +82,42 @@ def main():
         X_val, Y_val = cal.next_batch(BATCH_SIZE)
 
         # TODO: Train model
-        model.fit(x=X_train,y=Y_train,batch_size=BATCH_SIZE,epochs=EPOCHS,validation_data=(X_val,Y_val))
+        history = model.fit(x=X_train,y=Y_train,batch_size=BATCH_SIZE,epochs=EPOCHS,validation_data=(X_val,Y_val))
+
+        train_acc = np.append(train_acc, history.history['acc'])
+        train_val_acc = np.append(train_val_acc, history.history['val_acc'])
+        train_loss = np.append(train_loss, history.history['loss'])
+        train_val_loss = np.append(train_val_loss, history.history['val_loss'])
 
     # TODO: Save model weights
     model.save('side_hoe_number_2.h5')
     print 'model weights saved.'
+
+    # Create plots
+    plt.figure()
+    plt.hold(True)
+    plt.plot(train_acc)
+    plt.plot(train_val_acc)
+    plt.legend(loc='upper right')
+    plt.title('Model Accuracy')
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.savefig('./acc_vs_val_acc.png')
+    plt.hold(False)
+    plt.show()
+
+    plt.figure()
+    plt.hold(True)
+    plt.plot(train_loss)
+    plt.plot(train_val_loss)
+    plt.legend(loc='upper right')
+    plt.title('Model Accuracy')
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.savefig('./loss_vs_val_loss.png')
+    plt.hold(False)
+    plt.show()
+
     return
 
 
