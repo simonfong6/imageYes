@@ -19,15 +19,15 @@ import matplotlib.pyplot as plt
 from dataset import Dataset
 
 
-IMAGE_WIDTH = 299
-IMAGE_HEIGHT = 299
-NUM_CHANNELS = 3
+IMAGE_WIDTH,IMAGE_HEIGHT,NUM_CHANNELS = 299,299,3
+NUM_TRAIN,NUM_VAL,NUM_TEST = 30,10,60
 EPOCHS = 10
 BATCH_SIZE = 50
 
 # Load dataset
 cal = Dataset('caltech',IMAGE_HEIGHT,IMAGE_WIDTH)
 cal.read_data()
+cal.train_val_test_split(NUM_TRAIN,NUM_VAL,NUM_TEST)
 num_classes = cal.num_classes
 
 MEAN_PIXEL = np.array([104., 117., 123.]).reshape((1,1,3))
