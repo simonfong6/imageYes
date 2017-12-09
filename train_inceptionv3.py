@@ -1,4 +1,4 @@
-
+#!/env/bin/python
 """
 COGS 118B Project
 Author: Simon Fong, Thinh Le, Wilson Tran
@@ -23,7 +23,7 @@ IMAGE_WIDTH = 299
 IMAGE_HEIGHT = 299
 NUM_CHANNELS = 3
 EPOCHS = 10
-BATCH_SIZE = 5
+BATCH_SIZE = 50
 
 # Load dataset
 cal = Dataset('caltech',IMAGE_HEIGHT,IMAGE_WIDTH)
@@ -69,7 +69,7 @@ def main():
     train_val_acc = np.array([])
     train_loss = np.array([])
     train_val_loss = np.array([])
-
+    """
     print "NUM STEPS = {}".format(num_steps)
 
     for i in range(num_steps):
@@ -89,8 +89,26 @@ def main():
         train_loss = np.append(train_loss, history.history['loss'])
         train_val_loss = np.append(train_val_loss, history.history['val_loss'])
 
-    # TODO: Save model weights
-    model.save('side_hoe_number_2.h5')
+    """
+    
+    
+    
+    
+    X_train, Y_train = cal.load_training()
+    
+    X_val, Y_val = cal.load_validation()
+    
+    history = model.fit(x=X_train,y=Y_train,batch_size=BATCH_SIZE,
+                        epochs=EPOCHS,validation_data=(X_val,Y_val))
+
+    train_acc = np.append(train_acc, history.history['acc'])
+    train_val_acc = np.append(train_val_acc, history.history['val_acc'])
+    train_loss = np.append(train_loss, history.history['loss'])
+    train_val_loss = np.append(train_val_loss, history.history['val_loss'])
+    
+     
+    # Save model weights
+    model.save('fully_trained.h5')
     print 'model weights saved.'
 
     # Create plots
@@ -117,6 +135,12 @@ def main():
     plt.savefig('./loss_vs_val_loss.png')
     plt.hold(False)
     plt.show()
+    
+    X_test, Y_test = cal.load_testing()
+    metrics = model.evaluate(x=X_test,y=Y_test, batch_size=BATCH_SIZE)
+    
+    print(metrics)
+    print(model.metrics_names)
 
     return
 
