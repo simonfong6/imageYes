@@ -108,7 +108,7 @@ def main():
     
      
     # Save model weights
-    model.save('fully_trained.h5')
+    model.save('fully_trained1.h5')
     print 'model weights saved.'
 
     # Create plots
