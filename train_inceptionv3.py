@@ -20,8 +20,8 @@ from dataset import Dataset
 
 
 IMAGE_WIDTH,IMAGE_HEIGHT,NUM_CHANNELS = 299,299,3
-NUM_TRAIN,NUM_VAL,NUM_TEST = 30,10,60
-EPOCHS = 10
+NUM_TRAIN,NUM_VAL,NUM_TEST = 1,1,98
+EPOCHS = 1
 BATCH_SIZE = 50
 
 # Load dataset
@@ -108,9 +108,10 @@ def main():
     
      
     # Save model weights
-    model.save('fully_trained.h5')
+    model.save('fully_trained_1_1_98.h5')
     print 'model weights saved.'
 
+    """
     # Create plots
     plt.figure()
     plt.hold(True)
@@ -135,7 +136,7 @@ def main():
     plt.savefig('./loss_vs_val_loss.png')
     plt.hold(False)
     plt.show()
-    
+    """
     X_test, Y_test = cal.load_testing()
     metrics = model.evaluate(x=X_test,y=Y_test, batch_size=BATCH_SIZE)
     
