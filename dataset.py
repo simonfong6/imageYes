@@ -83,6 +83,11 @@ class Dataset:
         
         return images
         
+    def create_perm(self,length):
+        """Returns a permutation for the given length"""
+        perm = np.arange(length)
+        return np.random.shuffle(perm)
+        
     def shuffle(self,a_list,perm):
         """Returns a shuffled version of that list according to the perm"""
         
@@ -94,8 +99,8 @@ class Dataset:
         """Return the next `batch_size` examples from this data set."""
         
         # Create a random seed
-        perm = np.arange(self.image_count)
-        np.random.shuffle(perm)
+        perm = self.create_perm(self.image_count)
+        
         
         # Shuffle paths and get a batch of image arrays
         image_paths = self.shuffle(self.image_paths[],perm)
@@ -128,6 +133,10 @@ class Dataset:
         self.num_train = int( (train_percent/100.0) * self.image_count)
         self.num_val = int( (val_percent/100.0) * self.image_count)
         self.num_test = self.image_count - self.num_train - self.num_val
+        
+        
+        
+        
         
         
         
