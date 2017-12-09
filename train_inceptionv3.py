@@ -137,7 +137,7 @@ def main():
     plt.hold(False)
     plt.show()
     """
-    X_test, Y_test = cal.load_testing()
+    X_test, Y_test = cal.load_test()
     metrics = model.evaluate(x=X_test,y=Y_test, batch_size=BATCH_SIZE)
     
     print(metrics)
