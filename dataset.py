@@ -150,12 +150,13 @@ class Dataset:
         # Check if valid values
         if((train_percent + val_percent + test_percent) != 100):
             print("Percents do not total to 100")
-            return None
+            #return None
         
         # Calculate amount of each
         self.num_train = int( (train_percent/100.0) * self.image_count)
         self.num_val = int( (val_percent/100.0) * self.image_count)
-        self.num_test = self.image_count - self.num_train - self.num_val
+        self.num_test = int( (test_percent/100.0) * self.image_count)
+        #self.num_test = self.image_count - self.num_train - self.num_val
         
         # Create a random seed
         perm = self.create_perm(self.image_count)
@@ -184,7 +185,7 @@ class Dataset:
         self.image_paths_test = image_paths[start:end]
         self.labels_test = labels[start:end]
         
-        print("Splits training, validation, and testing data.")
+        print("Split {} data into {} training, {} validation, and {} testing data.".format(self.image_count, self.num_train, self.num_val, self.num_test))
         
     def load_training(self):
         """Returns training data and labels"""
@@ -240,7 +241,7 @@ def main():
     
     data = Dataset('caltech', 299, 299)
     data.read_data()
-    data.train_val_test_split(1,39,60)
+    data.train_val_test_split(1,39,1)
     
     names = data.names
     
