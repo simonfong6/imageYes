@@ -15,6 +15,8 @@ import glob
 import os
 import cv2
 import random
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from dataset import Dataset
 
