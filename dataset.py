@@ -1,3 +1,9 @@
+"""
+Retrains the last layer of the Inception V3 network.
+"""
+
+__author__ = "Simon Fong, Thinh Le, Wilson Tran"
+
 import os
 import cv2          # Needed image loading
 import numpy as np
