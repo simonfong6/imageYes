@@ -1,8 +1,7 @@
 """
 Retrains the last layer of the Inception V3 network.
-"""
-
 __author__ = "Simon Fong, Thinh Le, Wilson Tran"
+"""
 
 import os
 import cv2          # Needed image loading
@@ -224,7 +223,7 @@ class Dataset:
         
         return self.images_val, self.labels_val
     
-    def load_test(self):
+    def load_testing(self):
         """Returns testing data and labels"""
         
         # Load and reshape images
@@ -235,19 +234,16 @@ class Dataset:
         # Reshape labels
         self.labels_test = self.reshape_labels(self.labels_test)
         
-        print("Loaded validation data")
+        print("Loaded testing data")
         
         return self.images_test, self.labels_test
         
-        
-        
-        
-        
 def main():
+    """Runs a test example of the class"""
     
     data = Dataset('caltech', 299, 299)
     data.read_data()
-    data.train_val_test_split(1,39,1)
+    data.train_val_test_split(1,1,1)
     
     names = data.names
     
