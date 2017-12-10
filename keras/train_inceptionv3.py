@@ -14,6 +14,7 @@ import os
 import cv2
 import random
 import matplotlib
+import json                                     # Writing data to logger
 matplotlib.use('Agg')                           # Stops from plotting to screen
 import matplotlib.pyplot as plt
 from dataset import Dataset                     # Custom Dataset
@@ -63,6 +64,10 @@ def load_model():
     print("Model compiled")
 
     return model
+    
+def logger(message):
+    with open('./models/stats.txt', 'a+') as f:
+        f.write(message)
 
 
 
@@ -98,7 +103,9 @@ def main():
      
     # Save model weights
     model.save('./models/{}.h5'.format(ID))
-    print("model weights saved.")
+    logger(ID)
+    logger(json.dumps(history))
+    print("Model weights saved.")
 
     
     # Plot accuracy
@@ -130,7 +137,9 @@ def main():
     metrics = model.evaluate(x=X_test,y=Y_test, batch_size=BATCH_SIZE)
     
     print(metrics)
+    logger(str(metrics))
     print(model.metrics_names)
+    logger(str(model.metrics_names))
 
     return 0
 
