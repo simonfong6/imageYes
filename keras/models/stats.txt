@@ -1,0 +1,12 @@
+caltech_1_50_0.1_0.1_0.1caltech_1_50_0.1_0.1_0.1<keras.callbacks.History object at 0x7f91ca640910>caltech_1_50_0.1_0.1_0.1<keras.callbacks.History object at 0x7fbaaff00910>caltech_1_50_0.1_0.1_0.1<keras.callbacks.History object at 0x7f42b55c0910>[5.9256963729858398, 0.0]['loss', 'acc']caltech_1_50_0.1_0.1_0.1
+<keras.callbacks.History object at 0x7f8a571c0950>
+[5.9257135391235352, 0.0]
+['loss', 'acc']
+caltech_1_50_0.1_0.1_0.1
+{'acc': [0.0], 'loss': [16.032028198242188], 'val_acc': [0.0], 'val_loss': [15.295592308044434]}
+[13.713289260864258, 0.033333335071802139]
+['loss', 'acc']
+caltech_1_50_60_5_35
+{'acc': [0.13145284167651361], 'loss': [4.9212104873287474], 'val_acc': [0.36078431345278922], 'val_loss': [3.8713555039923175]}
+[3.7495345663365542, 0.40300597408487338]
+['loss', 'acc']
