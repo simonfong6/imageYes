@@ -103,7 +103,7 @@ def main():
     # Save model weights
     model.save('./models/{}.h5'.format(ID))
     logger(ID)
-    logger(json.dumps(history))
+    logger(str(history))
     print("Model weights saved.")
 
     
