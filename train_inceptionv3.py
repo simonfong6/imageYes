@@ -22,7 +22,7 @@ from dataset import Dataset
 
 
 IMAGE_WIDTH,IMAGE_HEIGHT,NUM_CHANNELS = 299,299,3
-NUM_TRAIN,NUM_VAL,NUM_TEST = 1,1,5
+NUM_TRAIN,NUM_VAL,NUM_TEST = 30,10,60
 EPOCHS = 1
 BATCH_SIZE = 50
 
@@ -110,7 +110,7 @@ def main():
     
      
     # Save model weights
-    model.save('fully_trained_1_1_98.h5')
+    model.save('fully_trained_30_10_60.h5')
     print 'model weights saved.'
 
     
@@ -122,7 +122,7 @@ def main():
     plt.title('Model Accuracy')
     plt.xlabel('Epoch')
     plt.ylabel('Accuracy')
-    plt.savefig('./acc_vs_val_acc.png')
+    plt.savefig('./acc_vs_val_acc_full.png')
     plt.hold(False)
     plt.show()
 
@@ -133,7 +133,7 @@ def main():
     plt.title('Model Loss')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
-    plt.savefig('./loss_vs_val_loss.png')
+    plt.savefig('./loss_vs_val_loss_full.png')
     plt.hold(False)
     plt.show()
     
