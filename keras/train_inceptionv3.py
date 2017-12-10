@@ -18,17 +18,18 @@ matplotlib.use('Agg')                           # Stops from plotting to screen
 import matplotlib.pyplot as plt
 from dataset import Dataset                     # Custom Dataset
 
-
+DATASET_NAME = 'caltech'
 IMAGE_WIDTH,IMAGE_HEIGHT,NUM_CHANNELS = 299,299,3
 EPOCHS = 1
 BATCH_SIZE = 50
 NUM_TRAIN,NUM_VAL,NUM_TEST = 0.1,0.1,0.1
 
-ID = "_{}_{}_{}_{}_{}".format(EPOCHS,BATCH_SIZE,NUM_TRAIN,NUM_VAL,NUM_TEST)
+ID = "{}_{}_{}_{}_{}_{}".format(DATASET_NAME,
+                                EPOCHS,BATCH_SIZE,NUM_TRAIN,NUM_VAL,NUM_TEST)
 
 
 # Load dataset
-cal = Dataset('caltech',IMAGE_HEIGHT,IMAGE_WIDTH)
+cal = Dataset(DATASET_NAME,IMAGE_HEIGHT,IMAGE_WIDTH)
 cal.read_data()
 cal.train_val_test_split(NUM_TRAIN,NUM_VAL,NUM_TEST)
 num_classes = cal.num_classes
@@ -55,8 +56,8 @@ def load_model():
     
     print("Model structure")
     model.summary()
-
-
+    
+    # Compile model
     model.compile(optimizers.SGD(lr=1e-4,momentum=0.9),
                 'categorical_crossentropy', metrics=['accuracy'])
     print("Model compiled")
@@ -70,7 +71,7 @@ def main():
     
     # Make model
     model = load_model()
-    print("Inception created\n")
+    print("Model created\n")
 
     # Init data array to plot
     train_acc = np.array([])
@@ -96,7 +97,7 @@ def main():
     
      
     # Save model weights
-    model.save('model{}.h5'.format(ID))
+    model.save('./models/{}.h5'.format(ID))
     print("model weights saved.")
 
     
@@ -108,7 +109,7 @@ def main():
     plt.title('Model Accuracy')
     plt.xlabel('Epoch')
     plt.ylabel('Accuracy')
-    plt.savefig('./plots/acc_vs_val_acc{}.png'.format(ID))
+    plt.savefig('./plots/acc_vs_val_acc_{}.png'.format(ID))
     plt.hold(False)
     plt.show()
 
@@ -120,7 +121,7 @@ def main():
     plt.title('Model Loss')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
-    plt.savefig('./plots/loss_vs_val_loss{}.png'.format(ID))
+    plt.savefig('./plots/loss_vs_val_loss_{}.png'.format(ID))
     plt.hold(False)
     plt.show()
     
