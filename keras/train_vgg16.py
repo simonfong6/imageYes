@@ -5,7 +5,7 @@ Author: Simon Fong, Thinh Le, Wilson Tran
 """
 
 from keras.models import Model
-from keras.applications.cgg16 import VGG16
+from keras.applications.vgg16 import VGG16
 from keras import optimizers
 from keras.layers import Dropout, Flatten, Dense
 from keras.utils.np_utils import to_categorical
