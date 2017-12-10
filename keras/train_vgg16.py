@@ -68,7 +68,7 @@ def load_model():
 def logger(message):
     """Logs any message into a file"""
     with open('./models/stats.txt', 'a+') as f:
-        f.write(message)
+        f.write(message + '\n')
 
 
 def main():
