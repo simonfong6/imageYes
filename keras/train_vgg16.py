@@ -25,7 +25,7 @@ EPOCHS = 1
 BATCH_SIZE = 50
 NUM_TRAIN,NUM_VAL,NUM_TEST = 0.1,0.1,0.1
 
-ID = "{}_{}_{}_{}_{}_{}".format(DATASET_NAME,
+ID = "vgg16_{}_{}_{}_{}_{}_{}".format(DATASET_NAME,
                                 EPOCHS,BATCH_SIZE,NUM_TRAIN,NUM_VAL,NUM_TEST)
 
 
