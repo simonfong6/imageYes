@@ -16,15 +16,18 @@ import os
 import cv2
 import random
 import matplotlib
-matplotlib.use('Agg')
+matplotlib.use('Agg')                           # Stops from plotting to screen
 import matplotlib.pyplot as plt
-from dataset import Dataset
+from dataset import Dataset                     # Custom Datset
 
 
 IMAGE_WIDTH,IMAGE_HEIGHT,NUM_CHANNELS = 299,299,3
-NUM_TRAIN,NUM_VAL,NUM_TEST = 1,1,5
 EPOCHS = 1
 BATCH_SIZE = 50
+NUM_TRAIN,NUM_VAL,NUM_TEST = 0.1,0.1,0.1
+
+ID = "_{}_{}_{}_{}_{}".format(EPOCHS,BATCH_SIZE,NUM_TRAIN,NUM_VAL,NUM_TEST)
+
 
 # Load dataset
 cal = Dataset('caltech',IMAGE_HEIGHT,IMAGE_WIDTH)
@@ -110,7 +113,7 @@ def main():
     
      
     # Save model weights
-    model.save('fully_trained_1_1_98.h5')
+    model.save('model{}.h5'.format(ID))
     print 'model weights saved.'
 
     
@@ -122,7 +125,7 @@ def main():
     plt.title('Model Accuracy')
     plt.xlabel('Epoch')
     plt.ylabel('Accuracy')
-    plt.savefig('./acc_vs_val_acc.png')
+    plt.savefig('./plots/acc_vs_val_acc{}.png'.format(ID))
     plt.hold(False)
     plt.show()
 
@@ -133,7 +136,7 @@ def main():
     plt.title('Model Loss')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
-    plt.savefig('./loss_vs_val_loss.png')
+    plt.savefig('./loss_vs_val_loss{}.png'.format(ID))
     plt.hold(False)
     plt.show()
     
