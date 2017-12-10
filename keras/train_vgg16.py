@@ -68,7 +68,7 @@ def load_model():
 def logger(message):
     """Logs any message into a file"""
     with open('./models/stats.txt', 'a+') as f:
-        f.write(message + '\n')
+        print >>f, message
 
 
 def main():
@@ -103,7 +103,7 @@ def main():
     # Save model weights
     model.save('./models/{}.h5'.format(ID))
     logger(ID)
-    logger(str(history.history))
+    logger(history.history)
     print("Model weights saved.")
 
     
@@ -136,9 +136,9 @@ def main():
     metrics = model.evaluate(x=X_test,y=Y_test, batch_size=BATCH_SIZE)
     
     print(metrics)
-    logger(str(metrics))
+    logger(metrics)
     print(model.metrics_names)
-    logger(str(model.metrics_names))
+    logger(model.metrics_names)
 
     return 0
 
