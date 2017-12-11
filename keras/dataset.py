@@ -237,18 +237,37 @@ class Dataset:
         print("Loaded testing data")
         
         return self.images_test, self.labels_test
+    
+    def resize(self):
+        """Resizes and saves the images"""
+
+        # Calculate total for progress tracker
+        image_paths = self.image_paths
+        total = len(image_paths)
+        
+        # Read images and store in images list
+        for i,image_path in enumerate(image_paths):
+            image = cv2.imread(image_path)
+            image_resized = cv2.resize(image, (self.height,self.width))
+            cv2.imwrite(image_path, image_resized)
+            
+            # Update progress tracker
+            sys.stdout.write("Loading progress:    %d/%d   \r" % (i+1,total) )
+            sys.stdout.flush()
+        
         
 def main():
     """Runs a test example of the class"""
     
     data = Dataset('web256', 299, 299)
     data.read_data()
-    data.train_val_test_split(1,1,1)
+    data.resize()
+    #data.train_val_test_split(1,1,1)
     
-    names = data.names
+    #names = data.names
     
-    images, labels = data.load_training()
-
+    #images, labels = data.load_training()
+"""
     # Display image and its label
     for i,image,label in zip(range(10),images,labels):
         name = names[np.argmax(label)]
@@ -258,6 +277,8 @@ def main():
         cv2.destroyAllWindows()
         if i == 10:
             break
+            
+"""
     
 if __name__ == '__main__':
     main()
