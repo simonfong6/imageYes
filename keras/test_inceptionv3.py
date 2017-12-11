@@ -18,7 +18,7 @@ from dataset import Dataset                     # Custom Dataset
 
 DATASET_NAME = 'caltech'
 IMAGE_WIDTH,IMAGE_HEIGHT,NUM_CHANNELS = 299,299,3
-NUM_TRAIN,NUM_VAL,NUM_TEST = 60,5,35
+NUM_TRAIN,NUM_VAL,NUM_TEST = 40,5,55
 BATCH_SIZE = 50
 
 ID = str(sys.argv[1])
