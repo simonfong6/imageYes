@@ -248,8 +248,13 @@ class Dataset:
         # Read images and store in images list
         for i,image_path in enumerate(image_paths):
             image = cv2.imread(image_path)
-            image_resized = cv2.resize(image, (self.height,self.width))
-            cv2.imwrite(image_path, image_resized)
+            try:
+                image_resized = cv2.resize(image, (self.height,self.width))
+                cv2.imwrite(image_path, image_resized)
+            except cv2.error:
+                os.remove(image_path)
+                print("Removed {}".format(image_path))
+            
             
             # Update progress tracker
             sys.stdout.write("Loading progress:    %d/%d   \r" % (i+1,total) )
@@ -259,7 +264,7 @@ class Dataset:
 def main():
     """Runs a test example of the class"""
     
-    data = Dataset('web256', 299, 299)
+    data = Dataset('../../../Downloads/web256', 299, 299)
     data.read_data()
     data.resize()
     #data.train_val_test_split(1,1,1)
