@@ -241,7 +241,7 @@ class Dataset:
 def main():
     """Runs a test example of the class"""
     
-    data = Dataset('caltech', 299, 299)
+    data = Dataset('web256', 299, 299)
     data.read_data()
     data.train_val_test_split(1,1,1)
     
