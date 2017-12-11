@@ -249,9 +249,11 @@ class Dataset:
         for i,image_path in enumerate(image_paths):
             image = cv2.imread(image_path)
             try:
+                # Try resizing and saving
                 image_resized = cv2.resize(image, (self.height,self.width))
                 cv2.imwrite(image_path, image_resized)
             except cv2.error:
+                # If it fails delete the file
                 os.remove(image_path)
                 print("Removed {}".format(image_path))
             
