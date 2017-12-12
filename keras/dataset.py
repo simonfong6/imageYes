@@ -268,7 +268,8 @@ def main():
     
     data = Dataset('web256', 299, 299)
     data.read_data()
-    data.resize()
+    print(data.image_count)
+    #data.resize()
     #data.train_val_test_split(1,1,1)
     
     #names = data.names
