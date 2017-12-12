@@ -37,7 +37,8 @@ else:
     
 # Define the codec and create VideoWriter object
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
-out = cv2.VideoWriter('output.mp4',fourcc, 20.0,
+out_name = str(sys.argv[3])
+out = cv2.VideoWriter(out_name,fourcc, 20.0,
                      (2*IMAGE_HEIGHT,2*IMAGE_WIDTH))
         
 def take_picture():
