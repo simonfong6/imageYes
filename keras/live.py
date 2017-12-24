@@ -16,87 +16,100 @@ import sys
 import cv2
 from dataset import Dataset                     # Custom Dataset
 
-# Need dataset for label to name mapping ie. 001 --> ak47
-DATASET_NAME = 'caltech'
-IMAGE_WIDTH,IMAGE_HEIGHT,NUM_CHANNELS = 299,299,3
-
-# Command line arg for choosing model
-model_path = str(sys.argv[2])
-
-# Load dataset
-cal = Dataset(DATASET_NAME,IMAGE_HEIGHT,IMAGE_WIDTH)
-cal.read_data()
-names = cal.names
-
-
-# Define VideoCapture object
-cap = None
-camera = str(sys.argv[1])
-
-# Define output video shape
-out_shape = None
-
-# Flag to show image during runtime
-SHOW_IMAGE = sys.argv[4] == 'True'
-
-if(camera == '0'):
-    cap = cv2.VideoCapture(0)       # 0: Built in webcam
-elif(camera == '1'):
-    cap = cv2.VideoCapture(1)       # 1: External webcam
-else:
-    cap = cv2.VideoCapture(camera)  # If not webcam, then open video
-
-# Define the codec
-fourcc = cv2.VideoWriter_fourcc(*'XVID')
-
-# Get output video name from command line
-out_name = str(sys.argv[3])
-
-# Get videocapture's shape
-out_shape = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
-             int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-# Set FPS from video file
-FPS = cap.get(cv2.CAP_PROP_FPS)
-
-# Create VideoWriter object
-out = cv2.VideoWriter(out_name,fourcc,FPS,out_shape)
+class VideoClassifier:
+    """Class to load a video and classify each frame of a video"""
+    
+    def __init__(self,input_video_name, dataset_name, image_height, 
+        image_width, model_name, output_video_name, show_image):
+        """Setup input video stream, model, and output video stream """
         
-def take_picture():
-    """Takes a picture and returns it in the proper format"""
-    
-    # Capture frame-by-frame
-    ret, original_image = cap.read()
-    
-    # Check if frame was captured
-    if(ret == False):
-        raise TypeError("Image failed to capture")
+        # Define VideoCapture object
+        if(input_video_name == '0'):
+            # 0: Built in webcam
+            self.input_video = cv2.VideoCapture(0)       
+        elif(input_video_name == '1'):
+            # 1: External webcam
+            self.input_video = cv2.VideoCapture(1)       
+        else:
+             # If not webcam, the open video
+            self.input_video = cv2.VideoCapture(input_video_name) 
+        
+        # Load dataset
+        dataset = Dataset(dataset_name,image_height,image_width)
+        dataset.read_data()        
+        self.dataset_map = dataset.names
+        self.image_height = image_height
+        self.image_width = image_width
+        
+        # Make model
+        print("Loading model from {}".format(model_name))
+        self.model = load_model(model_name)
+        print("{} loaded".format(model_name))
+        
+        # Save output video name
+        self.output_video_name = output_video_name
+        
+        # Define the codec
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
 
-    # Creates an image list because the model expects 4 dimensions
-    images = []
+        # Get videocapture's shape
+        out_shape = (int(self.input_video.get(cv2.CAP_PROP_FRAME_WIDTH)),
+                     int(self.input_video.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+        # Set FPS from video file
+        fps = self.input_video.get(cv2.CAP_PROP_FPS)
 
-    # Resize image
-    image_resized = cv2.resize(original_image, (IMAGE_HEIGHT,IMAGE_WIDTH))
-    images.append(image_resized)
+        # Create VideoWriter object
+        self.output_video = cv2.VideoWriter(self.output_video_name, 
+            fourcc, fps, out_shape)    
+        
+        # Flag for whether or not to show images while processing
+        self.SHOW_IMAGE = show_image
+        
+        # For progress spinner
+        self.iterations = 0
     
-    # Convert list to numpy array
-    images = np.array(images)
+    def get_frame(self):
+        """Takes a frame from the video and returns it in the proper format"""
+        
+        # Capture frame-by-frame
+        ret, original_image = self.input_video.read()
+        
+        # Check if frame was captured
+        if(ret == False):
+            raise TypeError("Image failed to capture")
 
-    return (images, original_image)
+        # Creates an image list because the model expects 4 dimensions
+        images = []
 
+        # Resize image
+        image_resized = cv2.resize(original_image, (self.image_height,
+                            self.image_width))
+        images.append(image_resized)
+        
+        # Convert list to numpy array
+        images = np.array(images)
 
-def main():
+        return (images, original_image)
     
-    # Make model
-    model = load_model(model_path)
-    print("{} loaded".format(model_path))
+    def release(self):
+        """Release and destory everything"""
+        
+        self.input_video.release()
+        self.output_video.release()
+        cv2.destroyAllWindows()
+        print("Finished processing video, saving file to {}".format(
+            self.output_video_name))
     
-    try:
+    def classify(self):
+        """Classify all the frames of the video and save the labeled video"""
+        
         # Continuously grab a frame from the camera and classify it
-        while(cap.isOpened()):
-            
+        print("Classifying the video")
+        while(self.input_video.isOpened()):
+            self.spin()
             try:
                 # Capture image from webcam
-                images, original_image = take_picture()
+                images, original_image = self.get_frame()
             
             except TypeError, e:
                 # Break if image failed to capture
@@ -104,39 +117,74 @@ def main():
                 break
             
             # Classify image
-            label = model.predict(images)
-            label = names[np.argmax(label[0])].split('.')[1]
+            label = self.model.predict(images)
+            label = self.dataset_map[np.argmax(label[0])].split('.')[1]
             
             #print(label)
             
             # Print the text on the image
             font = cv2.FONT_HERSHEY_SIMPLEX
-            cv2.putText(original_image,label,(50,50), font, 1,(255,255,255),2,cv2.LINE_AA)
+            cv2.putText(original_image,label,(50,50), font, 
+                        1,(255,255,255),2,cv2.LINE_AA)
             
             # Write image to video
-            out.write(original_image)
+            self.output_video.write(original_image)
             
             
             # Show the image if flag is set
-            if(SHOW_IMAGE):
+            if(self.SHOW_IMAGE):
                 cv2.imshow('image',original_image)
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
-                
-        # Release and destory everything
-        cap.release()
-        out.release()
-        cv2.destroyAllWindows()
-        print("Finished processing video, saving file to {}".format(out_name))
+                    
+        self.release()
+        
+    def spin(self):
+        "Spin the progress spinner"
+        self.iterations += 1
+        spin_states = {
+                        0: "-",
+                        1: "\\",
+                        2: "|",
+                        3: "/",
+                        4: "-",
+                        5: "\\",
+                        6: "|",
+                        7: "/",
+                        }
+        state = spin_states[self.iterations%8]
+        sys.stdout.write(state + "\r")
+        sys.stdout.flush()
+                   
+def main():
+    
+    # Need dataset for label to name mapping ie. 001 --> ak47
+    dataset_name = 'caltech'
+    image_width,image_height,num_channels = 299,299,3
+
+    # Get input video from command line
+    input_video_name = str(sys.argv[1])
+    
+    # Get model from command line
+    model_name = str(sys.argv[2])
+
+    # Get output video name from command line
+    output_video_name = str(sys.argv[3])
+
+    # Get show image flag from command line
+    show_image = sys.argv[4] == 'True'
+
+    video_classifier = VideoClassifier(input_video_name,dataset_name,
+                            image_height, image_width, model_name,          
+                            output_video_name, show_image)
+    
+    try:
+        video_classifier.classify()
     
     except KeyboardInterrupt:
         # Release and destory everything
-        cap.release()
-        out.release()
-        cv2.destroyAllWindows()
-        print("Exiting on Interrupt, saving file to {}".format(out_name))
-
-
+        video_classifier.release()
+        print("Exiting on Interrupt")
 
 if __name__ == '__main__':
     main()
