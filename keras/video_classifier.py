@@ -20,7 +20,7 @@ class VideoClassifier:
     """Class to load a video and classify each frame of a video"""
     
     def __init__(self,input_video_name, dataset_name, image_height, 
-        image_width, model_name, output_video_name, show_image):
+        image_width, model_name, output_video_name, show_image=False):
         """Setup input video stream, model, and output video stream """
         
         # Define VideoCapture object
