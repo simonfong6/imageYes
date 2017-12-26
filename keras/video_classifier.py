@@ -14,6 +14,7 @@ import numpy as np
 import os
 import sys
 import cv2
+from subprocess import call
 from dataset import Dataset                     # Custom Dataset
 
 class VideoClassifier:
@@ -50,7 +51,7 @@ class VideoClassifier:
         self.output_video_name = output_video_name
         
         # Define the codec
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        fourcc = cv2.VideoWriter_fourcc(*'X264')
 
         # Get videocapture's shape
         out_shape = (int(self.input_video.get(cv2.CAP_PROP_FRAME_WIDTH)),
@@ -185,6 +186,36 @@ def main():
         # Release and destory everything
         video_classifier.release()
         print("Exiting on Interrupt")
+        
+def test():
+    def convert_avi_to_mp4(avi_file_path, output_name):
+        call("ffmpeg -i '{input}' -ac 2 -b:v 2000k -c:a aac -c:v libx264 -b:a 160k -vprofile high -bf 0 -strict experimental -f mp4 '{output}.mp4'".format(input = avi_file_path, output = output_name),shell=True)
+        return True
+
+        
+    cam = cv2.VideoCapture(0)
+    
+    # Define the codec
+    fourcc = cv2.VideoWriter_fourcc('H','2','6','4')
+
+    # Get videocapture's shape
+    out_shape = (640,480)
+    # Set FPS from video file
+    fps = 30
+
+    # Create VideoWriter object
+    output_video = cv2.VideoWriter("test.avi", 
+        fourcc, fps, out_shape)
+    
+    for i in range(30):
+        ret,frame = cam.read()
+        output_video.write(frame)
+    output_video.release()
+    cam.release()
+    
+    convert_avi_to_mp4("test.avi","test")
+        
 
 if __name__ == '__main__':
-    main()
+    test()
+    
