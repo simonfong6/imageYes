@@ -4,9 +4,9 @@ COGS 118B Project
 Author: Simon Fong, Thinh Le, Wilson Tran
 
 Example Run Command:
-python live.py video_path model_path output_video_name flag_for_showing_image
+python video_classifier.py video_path model_path output_video_name flag_for_showing_image
 
-python live.py kimi.mp4 model.h5 kimi_out.mp4 False
+python video_classifier.py sunshine.mp4 model.h5 sunshine_c.mp4 False
 """
 
 from keras.models import Model, load_model
@@ -23,6 +23,9 @@ class VideoClassifier:
     def __init__(self,input_video_name, dataset_name, image_height, 
         image_width, model_name, output_video_name, show_image=False):
         """Setup input video stream, model, and output video stream """
+        
+        # Flag to determine to convert video file after writing
+        self.CONVERT_TO_MP4 = False
         
         # Define VideoCapture object
         if(input_video_name == '0'):
@@ -59,8 +62,17 @@ class VideoClassifier:
         # Set FPS from video file
         fps = self.input_video.get(cv2.CAP_PROP_FPS)
 
+        # If mp4 file, save as avi then convert
+        self.output_video_file_name = self.output_video_name.split('.')[0]
+        extension = self.output_video_name.split('.')[-1]
+        if(extension == 'mp4'):
+            self.output_video_name_temp = self.output_video_file_name + '.avi'
+            self.CONVERT_TO_MP4 = True
+        else:
+            self.output_video_name_temp = self.output_video_name
+        
         # Create VideoWriter object
-        self.output_video = cv2.VideoWriter(self.output_video_name, 
+        self.output_video = cv2.VideoWriter(self.output_video_name_temp, 
             fourcc, fps, out_shape)    
         
         # Flag for whether or not to show images while processing
@@ -121,8 +133,6 @@ class VideoClassifier:
             label = self.model.predict(images)
             label = self.dataset_map[np.argmax(label[0])].split('.')[1]
             
-            #print(label)
-            
             # Print the text on the image
             font = cv2.FONT_HERSHEY_SIMPLEX
             cv2.putText(original_image,label,(50,50), font, 
@@ -130,8 +140,7 @@ class VideoClassifier:
             
             # Write image to video
             self.output_video.write(original_image)
-            
-            
+                       
             # Show the image if flag is set
             if(self.SHOW_IMAGE):
                 cv2.imshow('image',original_image)
@@ -139,6 +148,18 @@ class VideoClassifier:
                     break
                     
         self.release()
+        
+        if(self.CONVERT_TO_MP4):
+            convert_avi_to_mp4(self.output_video_name_temp,
+                self.output_video_file_name)
+        
+        return self.output_video_name
+        
+    def convert_avi_to_mp4(avi_file_path, output_name):
+        cmd = "ffmpeg -i '{input}' -ac 2 -b:v 2000k -c:a aac -c:v libx264 -b:a 160k -vprofile high -bf 0 -strict experimental -f mp4 '{output}.mp4'".format(
+            input = avi_file_path, output = output_name)
+        call(cmd,shell=True)
+        return True
         
     def spin(self):
         "Spin the progress spinner"
@@ -187,35 +208,8 @@ def main():
         video_classifier.release()
         print("Exiting on Interrupt")
         
-def test():
-    def convert_avi_to_mp4(avi_file_path, output_name):
-        call("ffmpeg -i '{input}' -ac 2 -b:v 2000k -c:a aac -c:v libx264 -b:a 160k -vprofile high -bf 0 -strict experimental -f mp4 '{output}.mp4'".format(input = avi_file_path, output = output_name),shell=True)
-        return True
-
-        
-    cam = cv2.VideoCapture(0)
-    
-    # Define the codec
-    fourcc = cv2.VideoWriter_fourcc('H','2','6','4')
-
-    # Get videocapture's shape
-    out_shape = (640,480)
-    # Set FPS from video file
-    fps = 30
-
-    # Create VideoWriter object
-    output_video = cv2.VideoWriter("test.avi", 
-        fourcc, fps, out_shape)
-    
-    for i in range(30):
-        ret,frame = cam.read()
-        output_video.write(frame)
-    output_video.release()
-    cam.release()
-    
-    convert_avi_to_mp4("test.avi","test")
         
 
 if __name__ == '__main__':
-    test()
+    main()
     
