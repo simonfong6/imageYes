@@ -46,12 +46,14 @@ class Downloader:
     def remove(self):
         """Deletes the downloaded youtube video."""
         os.remove(self.temp_file_path)
+        os.rmdir(self.TEMP_DIR)
 
         
 def main():
     d = Downloader("https://www.youtube.com/watch?v=a2GujJZfXpg")
     
     print(d.download())
+    
     d.remove()
     
 if(__name__ == '__main__'):
