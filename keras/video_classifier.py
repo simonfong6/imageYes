@@ -150,15 +150,16 @@ class VideoClassifier:
         self.release()
         
         if(self.CONVERT_TO_MP4):
-            convert_avi_to_mp4(self.output_video_name_temp,
+            self.convert_avi_to_mp4(self.output_video_name_temp,
                 self.output_video_file_name)
         
         return self.output_video_name
         
-    def convert_avi_to_mp4(avi_file_path, output_name):
+    def convert_avi_to_mp4(self, avi_file_path, output_name):
         cmd = "ffmpeg -i '{input}' -ac 2 -b:v 2000k -c:a aac -c:v libx264 -b:a 160k -vprofile high -bf 0 -strict experimental -f mp4 '{output}.mp4'".format(
             input = avi_file_path, output = output_name)
         call(cmd,shell=True)
+        os.remove(avi_file_path)
         return True
         
     def spin(self):
