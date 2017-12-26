@@ -4,3 +4,4 @@ Comparison of using transfer learning on the Caltech 256 dataset and on an uncle
 http://www.vision.caltech.edu/Image_Datasets/Caltech256/  
 https://github.com/hardikvasa/google-images-download  
 https://stackoverflow.com/questions/22748617/python-avi-to-mp4  
+subprocess.call http://www.pythonforbeginners.com/os/subprocess-for-system-administrators  
