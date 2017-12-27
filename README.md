@@ -78,6 +78,10 @@ sudo swapoff /var/swap.1
 sudo rm /var/swap.1
 ```
 
+## Runtime Notes
+Runtime 27 secs for 11 sec video on Laptop at 2.45 runtime secs/video secs  
+Runtime 85 secs for 18 sec video on Laptop at 4.72 runtime secs/video secs  
+
 # Resources
 [Caltech 256 Dataset](http://www.vision.caltech.edu/Image_Datasets/Caltech256/)  
 [Google Image Webscraper](https://github.com/hardikvasa/google-images-download)  
@@ -89,3 +93,5 @@ Cannot run flask as ```threaded=True``` or else it will break the Keras predict 
 [OpenCV Install](http://milq.github.io/install-opencv-ubuntu-debian/)  
 [Swapspace for Keras Installation](https://stackoverflow.com/questions/19595944/trouble-installing-scipy-in-virtualenv-on-a-amazon-ec2-linux-micro-instance)  
 [10 Ways to Host Web Applications](https://blog.patricktriest.com/host-webapps-free/)  
+[POSSIBLE OpenCV on Lambda](https://github.com/aeddi/aws-lambda-python-opencv)  
+[POSSIBLE Keras on Lambda](https://github.com/sunilmallya/keras-lambda)  
