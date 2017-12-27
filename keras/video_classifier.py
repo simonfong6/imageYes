@@ -20,14 +20,30 @@ from dataset import Dataset                     # Custom Dataset
 class VideoClassifier:
     """Class to load a video and classify each frame of a video"""
     
-    def __init__(self,input_video_name, dataset_name, image_height, 
-        image_width, model_name, output_video_name, show_image=False):
+    def __init__(self, dataset_name, image_height, image_width, model_name,
+        show_image=False):
         """Setup input video stream, model, and output video stream """
+        
+        # Load dataset
+        self.dataset = Dataset(dataset_name,image_height,image_width)
+        self.dataset.read_data()        
+        
+        # Make model
+        print("Loading model from {}".format(model_name))
+        self.model = load_model(model_name)
+        print("{} loaded".format(model_name))
         
         # Flag to determine to convert video file after writing
         self.CONVERT_TO_MP4 = False
         
-        # Define VideoCapture object
+        # Flag for whether or not to show images while processing
+        self.SHOW_IMAGE = show_image
+        
+        # For progress spinner
+        self.iterations = 0
+        
+    def create_video_input(self, input_video_name):
+        """Define VideoCapture object"""
         if(input_video_name == '0'):
             # 0: Built in webcam
             self.input_video = cv2.VideoCapture(0)       
@@ -37,49 +53,35 @@ class VideoClassifier:
         else:
              # If not webcam, the open video
             self.input_video = cv2.VideoCapture(input_video_name) 
-        
-        # Load dataset
-        dataset = Dataset(dataset_name,image_height,image_width)
-        dataset.read_data()        
-        self.dataset_map = dataset.names
-        self.image_height = image_height
-        self.image_width = image_width
-        
-        # Make model
-        print("Loading model from {}".format(model_name))
-        self.model = load_model(model_name)
-        print("{} loaded".format(model_name))
+    
+    def create_video_writer(self, output_video_name):
+        """Define VideoWriter object"""
         
         # Save output video name
-        self.output_video_name = output_video_name
+        self.output_video_name = output_video_name.split('.')[0]
+        self.extension = output_video_name.split('.')[-1]
+        
+        # If mp4 file, save as avi then convert
+        if(self.extension == 'mp4'):
+            self.output_video_name_temp = self.output_video_name + '.avi'
+            self.CONVERT_TO_MP4 = True
+        else:
+            self.output_video_name_temp = '.'.join(self.output_video_name, self.extension)
         
         # Define the codec
         fourcc = cv2.VideoWriter_fourcc(*'X264')
 
+        # Set FPS from video file
+        fps = self.input_video.get(cv2.CAP_PROP_FPS)
+        
         # Get videocapture's shape
         out_shape = (int(self.input_video.get(cv2.CAP_PROP_FRAME_WIDTH)),
                      int(self.input_video.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-        # Set FPS from video file
-        fps = self.input_video.get(cv2.CAP_PROP_FPS)
-
-        # If mp4 file, save as avi then convert
-        self.output_video_file_name = self.output_video_name.split('.')[0]
-        extension = self.output_video_name.split('.')[-1]
-        if(extension == 'mp4'):
-            self.output_video_name_temp = self.output_video_file_name + '.avi'
-            self.CONVERT_TO_MP4 = True
-        else:
-            self.output_video_name_temp = self.output_video_name
         
         # Create VideoWriter object
         self.output_video = cv2.VideoWriter(self.output_video_name_temp, 
-            fourcc, fps, out_shape)    
-        
-        # Flag for whether or not to show images while processing
-        self.SHOW_IMAGE = show_image
-        
-        # For progress spinner
-        self.iterations = 0
+            fourcc, fps, out_shape)
+    
     
     def get_frame(self):
         """Takes a frame from the video and returns it in the proper format"""
@@ -95,8 +97,8 @@ class VideoClassifier:
         images = []
 
         # Resize image
-        image_resized = cv2.resize(original_image, (self.image_height,
-                            self.image_width))
+        image_resized = cv2.resize(original_image, (self.dataset.height,
+                            self.dataset.width))
         images.append(image_resized)
         
         # Convert list to numpy array
@@ -104,17 +106,14 @@ class VideoClassifier:
 
         return (images, original_image)
     
-    def release(self):
-        """Release and destory everything"""
-        
-        self.input_video.release()
-        self.output_video.release()
-        cv2.destroyAllWindows()
-        print("Finished processing video, saving file to {}".format(
-            self.output_video_name))
-    
-    def classify(self):
+    def classify(self, input_video_name, output_video_name):
         """Classify all the frames of the video and save the labeled video"""
+        
+        # Create video capture object
+        self.create_video_input(input_video_name)
+        
+        # Create video writer object
+        self.create_video_writer(output_video_name)
         
         # Continuously grab a frame from the camera and classify it
         print("Classifying the video")
@@ -131,7 +130,7 @@ class VideoClassifier:
             
             # Classify image
             label = self.model.predict(images)
-            label = self.dataset_map[np.argmax(label[0])].split('.')[1]
+            label = self.dataset.names[np.argmax(label[0])].split('.')[1]
             
             # Print the text on the image
             font = cv2.FONT_HERSHEY_SIMPLEX
@@ -151,9 +150,18 @@ class VideoClassifier:
         
         if(self.CONVERT_TO_MP4):
             self.convert_avi_to_mp4(self.output_video_name_temp,
-                self.output_video_file_name)
+                self.output_video_name)
         
         return self.output_video_name
+        
+    def release(self):
+        """Release and destory everything"""
+        
+        self.input_video.release()
+        self.output_video.release()
+        cv2.destroyAllWindows()
+        print("Finished processing video, saving file to {}".format(
+            self.output_video_name))
         
     def convert_avi_to_mp4(self, avi_file_path, output_name):
         cmd = "ffmpeg -i '{input}' -ac 2 -b:v 2000k -c:a aac -c:v libx264 -b:a 160k -vprofile high -bf 0 -strict experimental -f mp4 '{output}.mp4' -y".format(
@@ -197,12 +205,11 @@ def main():
     # Get show image flag from command line
     show_image = sys.argv[4] == 'True'
 
-    video_classifier = VideoClassifier(input_video_name,dataset_name,
-                            image_height, image_width, model_name,          
-                            output_video_name, show_image)
+    video_classifier = VideoClassifier(dataset_name, image_height,      
+        image_width, model_name, show_image)
     
     try:
-        video_classifier.classify()
+        video_classifier.classify(input_video_name, output_video_name)
     
     except KeyboardInterrupt:
         # Release and destory everything
