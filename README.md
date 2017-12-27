@@ -56,5 +56,5 @@ sudo apt-get install pycharm-community
 [Converting AVI to MP4 in Python](https://stackoverflow.com/questions/22748617/python-avi-to-mp4)  
 [subprocess.call](http://www.pythonforbeginners.com/os/subprocess-for-system-administrators)  
 [Keras and Flask Bug Solution](https://stackoverflow.com/questions/43822458/loading-a-huge-keras-model-into-a-flask-app/47991642#47991642)  
-Cannot run flask as ```threaded=True``` or else it will break the Keras predict method. Unsure why
+Cannot run flask as ```threaded=True``` or else it will break the Keras predict method. Unsure why  
 [Pycharm Installation](https://itsfoss.com/install-pycharm-ubuntu/)  
