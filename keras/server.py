@@ -7,9 +7,18 @@ from flask import Flask, request, send_from_directory, render_template
 from yt_classifier import YtClassifier
 import os
 
-app = Flask(__name__)
-
 VIDEO_DIR = "videos"
+
+# Need dataset for label to name mapping ie. 001 --> ak47
+dataset_name = 'caltech'
+image_width,image_height = 299,299
+
+# Model to use to classify
+model_name = 'models/caltech_10_50_40_5_55.h5'
+
+
+
+app = Flask(__name__)
 
 @app.route('/')
 def index():
@@ -17,21 +26,16 @@ def index():
 
 @app.route('/classify', methods=['POST'])
 def classify():
-    # Need dataset for label to name mapping ie. 001 --> ak47
-    dataset_name = 'caltech'
-    image_width,image_height = 299,299
-    
-    # Model to use to classify
-    model_path = 'models/caltech_10_50_40_5_55.h5'
-    
+    """Downloads and classifies a given video"""
     url = request.form['video_url']
-    
-    
     output_video_name = "out.mp4"
     video_path = os.path.join(VIDEO_DIR,output_video_name)
+    # Create url video classifier
+    yt_classifier = YtClassifier(dataset_name, image_height, image_width,
+    model_name)
+    yt_classifier.classify(url,video_path)
+    del yt_classifier
     
-    y = YtClassifier(model_path, dataset_name, image_width, image_height)
-    y.classify(url,video_path)
     return render_template('video.html', video=output_video_name)
 
 @app.route('/videos/<video>')
