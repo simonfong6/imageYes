@@ -9,6 +9,10 @@ import os
 
 VIDEO_DIR = "videos"
 
+# Create video directory if it doesn't exist
+if(os.path.isdir(VIDEO_DIR)):
+    os.mkdir(VIDEO_DIR)
+
 # Need dataset for label to name mapping ie. 001 --> ak47
 dataset_name = 'caltech'
 image_width,image_height = 299,299
