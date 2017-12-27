@@ -15,7 +15,9 @@ image_width,image_height = 299,299
 
 # Model to use to classify
 model_name = 'models/caltech_10_50_40_5_55.h5'
-
+# Create url video classifier
+yt_classifier = YtClassifier(dataset_name, image_height, image_width,    
+    model_name)
 
 
 app = Flask(__name__)
@@ -30,11 +32,8 @@ def classify():
     url = request.form['video_url']
     output_video_name = "out.mp4"
     video_path = os.path.join(VIDEO_DIR,output_video_name)
-    # Create url video classifier
-    yt_classifier = YtClassifier(dataset_name, image_height, image_width,
-    model_name)
+    
     yt_classifier.classify(url,video_path)
-    del yt_classifier
     
     return render_template('video.html', video=output_video_name)
 
@@ -44,7 +43,7 @@ def videos(video):
 
 
 def main():
-    app.run(host='0.0.0.0', port=5000, threaded=True)
+    app.run(host='0.0.0.0', port=5000)
     
 
 if(__name__ == '__main__'):
