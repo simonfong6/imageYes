@@ -8,23 +8,15 @@ from downloader import Downloader
 
 class YtClassifier:
     
-    def __init__(self, model_path, dataset_name, image_width, image_height):
-        self.model_path = model_path
-        self.dataset_name = dataset_name
-        self.image_width = image_width
-        self.image_height = image_height
+    def __init__(self, dataset_name, image_height, image_width, model_name):
+        self.video_classifier = VideoClassifier(dataset_name, 
+            image_height, image_width, model_name)
     
-    def classify(self, yt_url, output_video_name):
+    def classify(self, url, output_video_name):
         
-        d = Downloader(yt_url)
+        d = Downloader(url)
         input_video_name = d.download()
-        
-        v = VideoClassifier(
-            input_video_name,self.dataset_name,
-            self.image_height, self.image_width,
-            self.model_path, output_video_name)
-            
-        v.classify()
+        self.video_classifier.classify(input_video_name, output_video_name)
         d.remove()
 
 def main():
@@ -35,10 +27,10 @@ def main():
     # Model to use to classify
     model_path = 'models/caltech_10_50_40_5_55.h5'
 
-    y = YtClassifier(model_path, dataset_name, image_width, image_height)
-    yt_url = "https://www.youtube.com/watch?v=G0uGB5C56Uk"
-    output_video_name = "kimi_classified.mp4"
-    y.classify(yt_url,output_video_name)
+    y = YtClassifier(dataset_name, image_height, image_width, model_name)
+    url = "https://www.youtube.com/watch?v=G0uGB5C56Uk"
+    output_video_name = "bunny.mp4"
+    y.classify(url,output_video_name)
 
 if(__name__ == '__main__'):
     main()
