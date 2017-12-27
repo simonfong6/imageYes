@@ -1,6 +1,22 @@
 # ImageYes
 Comparison of using transfer learning on the Caltech 256 dataset and on an unclean dataset scraped from the web.This is for COGS 118B final project.  
 
+# Software Dependencies
+Install keras, tensorflow, h5py for model inferencing
+Install flask for web server component
+```
+pip install keras tensorflow h5py flask youtube_dl
+```
+Installing OpenCV
+```
+wget https://raw.githubusercontent.com/milq/milq/master/scripts/bash/install-opencv.sh  
+sudo bash install-opencv.sh
+```
+Symbolicallyy link the OpenCV library to python libraries (Unsure why this works, but needed to do this before creating a virtualenv and using OpenCV. OpenCV will work outside a virtualenv without this.)
+```
+sudo ln -s /usr/local/lib/python2.7/dist-packages/cv2.so  /usr/lib/python2.7/
+```
+
 # Webscraper
 
 # Experiment Results
@@ -49,6 +65,18 @@ Install Pycharm Community Edition
 sudo apt-get install pycharm-community
 ```
 
+## Adding swap space
+```
+sudo /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1024  
+sudo /sbin/mkswap /var/swap.1  
+sudo /sbin/swapon /var/swap.1  
+```
+
+## Removing swap space
+```
+sudo swapoff /var/swap.1
+sudo rm /var/swap.1
+```
 
 # Resources
 [Caltech 256 Dataset](http://www.vision.caltech.edu/Image_Datasets/Caltech256/)  
@@ -58,3 +86,5 @@ sudo apt-get install pycharm-community
 [Keras and Flask Bug Solution](https://stackoverflow.com/questions/43822458/loading-a-huge-keras-model-into-a-flask-app/47991642#47991642)  
 Cannot run flask as ```threaded=True``` or else it will break the Keras predict method. Unsure why  
 [Pycharm Installation](https://itsfoss.com/install-pycharm-ubuntu/)  
+[OpenCV Install](http://milq.github.io/install-opencv-ubuntu-debian/)  
+[Swapspace for Keras Installation](https://stackoverflow.com/questions/19595944/trouble-installing-scipy-in-virtualenv-on-a-amazon-ec2-linux-micro-instance)  
