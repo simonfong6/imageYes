@@ -88,3 +88,4 @@ Cannot run flask as ```threaded=True``` or else it will break the Keras predict 
 [Pycharm Installation](https://itsfoss.com/install-pycharm-ubuntu/)  
 [OpenCV Install](http://milq.github.io/install-opencv-ubuntu-debian/)  
 [Swapspace for Keras Installation](https://stackoverflow.com/questions/19595944/trouble-installing-scipy-in-virtualenv-on-a-amazon-ec2-linux-micro-instance)  
+[10 Ways to Host Web Applications](https://blog.patricktriest.com/host-webapps-free/)  
