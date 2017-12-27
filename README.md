@@ -34,11 +34,11 @@ Provides form to enter a URL to a video and returns that video with classificati
 ```
 python server.py
 ```
-Head to [localhost:5000] and enter a video URL such as this one, https://www.youtube.com/watch?v=lTTajzrSkCw . After submitting, it will take some time to process. Eventually, you will see the video specified with classification labels.
+Head to http://localhost:5000/ and enter a video URL such as this one, https://www.youtube.com/watch?v=lTTajzrSkCw . After submitting, it will take some time to process. Eventually, you will see the video specified with classification labels.
 # Other Useful Resources
 
 ## Installing PyCharm Community Edition by PPA
-[https://itsfoss.com/install-pycharm-ubuntu/]  
+https://itsfoss.com/install-pycharm-ubuntu/  
 Add the PPA
 ```
 sudo add-apt-repository ppa:mystic-mirage/pycharm
