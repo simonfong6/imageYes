@@ -65,6 +65,17 @@ Install Pycharm Community Edition
 sudo apt-get install pycharm-community
 ```
 
+## Installing Atom
+Add the PPA
+```
+sudo add-apt-repository ppa:webupd8team/atom
+sudo apt update
+```
+Install Atom
+```
+sudo apt install atom
+```
+
 ## Adding swap space
 ```
 sudo /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1024  
@@ -93,5 +104,6 @@ Cannot run flask as ```threaded=True``` or else it will break the Keras predict 
 [OpenCV Install](http://milq.github.io/install-opencv-ubuntu-debian/)  
 [Swapspace for Keras Installation](https://stackoverflow.com/questions/19595944/trouble-installing-scipy-in-virtualenv-on-a-amazon-ec2-linux-micro-instance)  
 [10 Ways to Host Web Applications](https://blog.patricktriest.com/host-webapps-free/)  
+[Installing Atom](http://tipsonubuntu.com/2016/08/05/install-atom-text-editor-ubuntu-16-04/)  
 [POSSIBLE OpenCV on Lambda](https://github.com/aeddi/aws-lambda-python-opencv)  
 [POSSIBLE Keras on Lambda](https://github.com/sunilmallya/keras-lambda)  
