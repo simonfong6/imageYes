@@ -10,7 +10,8 @@ import os
 VIDEO_DIR = "videos"
 
 # Create video directory if it doesn't exist
-if(os.path.isdir(VIDEO_DIR)):
+if(not os.path.isdir(VIDEO_DIR)):
+    print("{}/ does not exist, creating it now.".format(VIDEO_DIR))
     os.mkdir(VIDEO_DIR)
 
 # Need dataset for label to name mapping ie. 001 --> ak47
