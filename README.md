@@ -69,11 +69,11 @@ sudo apt-get install pycharm-community
 Add the PPA
 ```
 sudo add-apt-repository ppa:webupd8team/atom
-sudo apt update
+sudo apt-get update
 ```
 Install Atom
 ```
-sudo apt install atom
+sudo apt-get install atom
 ```
 
 ## Adding swap space
