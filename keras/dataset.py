@@ -277,13 +277,13 @@ def main():
     data = Dataset('plankton_resized', 299, 299)
     data.read_data()
     print(data.num_classes)
-    #data.resize()
-    #data.train_val_test_split(1,1,1)
+    data.resize()
+    data.train_val_test_split(1,1,1)
     
-    #names = data.names
+    names = data.names
     
-    #images, labels = data.load_training()
-"""
+    images, labels = data.load_training()
+
     # Display image and its label
     for i,image,label in zip(range(10),images,labels):
         name = names[np.argmax(label)]
@@ -294,7 +294,6 @@ def main():
         if i == 10:
             break
             
-"""
     
 if __name__ == '__main__':
     main()
