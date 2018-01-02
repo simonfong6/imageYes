@@ -89,6 +89,13 @@ sudo swapoff /var/swap.1
 sudo rm /var/swap.1
 ```
 
+## Allowing Keras to Predict in Parallel/Multithreaded
+Build the predict function before you start multithreading. (Unsure why building it inside the thread breaks it.) Fix found [here](https://github.com/keras-team/keras/issues/6124).
+```
+model._make_predict_function() # Have to initialize before threading
+
+```
+
 ## Runtime Notes
 Runtime 27 secs for 11 sec video on Laptop at 2.45 runtime secs/video secs  
 Runtime 85 secs for 18 sec video on Laptop at 4.72 runtime secs/video secs  
@@ -99,7 +106,8 @@ Runtime 85 secs for 18 sec video on Laptop at 4.72 runtime secs/video secs
 [Converting AVI to MP4 in Python](https://stackoverflow.com/questions/22748617/python-avi-to-mp4)  
 [subprocess.call](http://www.pythonforbeginners.com/os/subprocess-for-system-administrators)  
 [Keras and Flask Bug Solution](https://stackoverflow.com/questions/43822458/loading-a-huge-keras-model-into-a-flask-app/47991642#47991642)  
-Cannot run flask as ```threaded=True``` or else it will break the Keras predict method. Unsure why  
+Cannot run flask as ```threaded=True``` or else it will break the Keras predict method. Unsure why(Solution found below.)  
+[Keras Threaded Predict Bug Solved](https://github.com/keras-team/keras/issues/6124)  
 [Pycharm Installation](https://itsfoss.com/install-pycharm-ubuntu/)  
 [OpenCV Install](http://milq.github.io/install-opencv-ubuntu-debian/)  
 [Swapspace for Keras Installation](https://stackoverflow.com/questions/19595944/trouble-installing-scipy-in-virtualenv-on-a-amazon-ec2-linux-micro-instance)  
