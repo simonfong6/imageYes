@@ -33,6 +33,10 @@ class VideoClassifier:
         self.model = load_model(model_name)
         print("{} loaded".format(model_name))
         
+        # Build predict function ahead of time
+        # (Fix so that multi-threading works in Keras)
+        self.model._make_predict_function()
+        
         # Flag to determine to convert video file after writing
         self.CONVERT_TO_MP4 = False
         
