@@ -9,11 +9,12 @@ import numpy as np
 import sys          # Needed for progress tracking
 
 class Dataset:
-    def __init__(self,data_dir,height,width):
+    def __init__(self,data_dir,height,width,resized=False):
         self.data_dir = data_dir# Path to the directory of data
         self.height = height    # Height that an image is resized to
         self.width = width      # Width that an image is resized to
         self.channels = 3
+        self.resized = resized  # Flag for whether or not to resize on load
         self.num_classes = 0    # Tracks number of classes
         self.image_count = 0    # Tracks total number of images
         self.image_paths = []   # List of paths to images
@@ -86,8 +87,9 @@ class Dataset:
         # Read images and store in images list
         for i,image_path in enumerate(image_paths):
             image = cv2.imread(image_path)
-            image_resized = cv2.resize(image, (self.height,self.width))
-            images.append(image_resized)
+            if(self.resized == False):
+                image = cv2.resize(image, (self.height,self.width))
+            images.append(image)
             
             # Update progress tracker
             sys.stdout.write("Loading progress:    %d/%d   \r" % (i+1,total) )
@@ -261,14 +263,20 @@ class Dataset:
             # Update progress tracker
             sys.stdout.write("Loading progress:    %d/%d   \r" % (i+1,total) )
             sys.stdout.flush()
+            
+        # Print final message
+        print("{} images resized to ({},{})".format(self.image_count,
+                                                        self.height,
+                                                        self.width))
+            
         
         
 def main():
     """Runs a test example of the class"""
     
-    data = Dataset('web256', 299, 299)
+    data = Dataset('plankton_resized', 299, 299)
     data.read_data()
-    print(data.image_count)
+    print(data.num_classes)
     #data.resize()
     #data.train_val_test_split(1,1,1)
     
